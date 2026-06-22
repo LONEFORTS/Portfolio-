@@ -437,7 +437,52 @@
       document.getElementById('progress').style.width = (winScroll / height) * 100 + "%";
       document.querySelectorAll('.reveal').forEach(el => { if (el.getBoundingClientRect().top < window.innerHeight * 0.85) el.classList.add('in'); });
       const nav = document.getElementById('nav'); if(window.scrollY > 50) nav.classList.add('scrolled'); else nav.classList.remove('scrolled');
+    });  
+    // ============================================================
+// ENHANCED SMOOTH SCROLL — Buttery smooth with easing
+// ============================================================
+(function() {
+  // Only enable on non-touch devices or if user prefers reduced motion
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  
+  // Select all internal links with hash
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const targetId = this.getAttribute('href');
+      if (targetId === '#') return;
+      
+      const targetElement = document.querySelector(targetId);
+      if (!targetElement) return;
+      
+      e.preventDefault();
+      
+      const targetPosition = targetElement.getBoundingClientRect().top + window.pageYOffset;
+      const startPosition = window.pageYOffset;
+      const distance = targetPosition - startPosition;
+      const duration = 1200; // milliseconds (adjust for faster/slower)
+      let startTime = null;
+      
+      function easeInOutCubic(t) {
+        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+      }
+      
+      function animation(currentTime) {
+        if (startTime === null) startTime = currentTime;
+        const timeElapsed = currentTime - startTime;
+        const progress = Math.min(timeElapsed / duration, 1);
+        const easeProgress = easeInOutCubic(progress);
+        
+        window.scrollTo(0, startPosition + distance * easeProgress);
+        
+        if (timeElapsed < duration) {
+          requestAnimationFrame(animation);
+        }
+      }
+      
+      requestAnimationFrame(animation);
     });
+  });
+})();
   </script>
 </body>
 </html>
