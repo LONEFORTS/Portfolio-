@@ -268,7 +268,40 @@
     <div style="font-size: 0.65rem; opacity: 0.3; letter-spacing: 0.15em; margin-top: 40px;">© 2026 LONEFORTS </div>
   </footer>
 
-  <script>
+  <script> 
+    // ============================================================
+// FULLSCREEN FEATURE — Auto‑request on load & user interaction
+// ============================================================
+(function() {
+  function requestFullscreen() {
+    const el = document.documentElement;
+    if (el.requestFullscreen) {
+      el.requestFullscreen().catch(function(err) {});
+    } else if (el.webkitRequestFullscreen) {
+      el.webkitRequestFullscreen();
+    } else if (el.msRequestFullscreen) {
+      el.msRequestFullscreen();
+    }
+  }
+
+  window.addEventListener('load', function() {
+    setTimeout(requestFullscreen, 300);
+  });
+
+  document.addEventListener('click', function firstClick() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      requestFullscreen();
+    }
+    document.removeEventListener('click', firstClick);
+  });
+
+  document.addEventListener('touchstart', function firstTouch() {
+    if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+      requestFullscreen();
+    }
+    document.removeEventListener('touchstart', firstTouch);
+  }, { once: true });
+})();
     const $ = (s,c=document)=>c.querySelector(s);
     const $$ = (s,c=document)=>[...c.querySelectorAll(s)];
     const lerp=(a,b,t)=>a+(b-a)*t;
